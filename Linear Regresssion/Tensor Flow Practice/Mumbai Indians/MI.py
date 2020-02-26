@@ -1,3 +1,6 @@
+"""
+The following code utilises TesnsorFlow 1.x
+"""
 from __future__ import print_function
 
 import math

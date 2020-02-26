@@ -1,3 +1,6 @@
+"""
+The following code utilises TesnsorFlow 1.x
+"""
 #Some of the input dataset is now considered a validation set.
 from __future__ import print_function
 
