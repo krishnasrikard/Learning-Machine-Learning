@@ -14,4 +14,8 @@ Building SVM Classifier from scratch using TensorFlow on Randomly created Multi-
 
 ## K-Nearest Neighbours (KNN)
 
-Implementation of k-Nearest Neighbours Algorithm on Iris Flower Dataset.
+Implementation of K-Nearest Neighbours Algorithm on Iris Flower Dataset.
+
+## K-Means Clustering
+
+Implementation of K-Means Clustering.
