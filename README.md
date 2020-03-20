@@ -12,6 +12,6 @@ Task of Logistic Regression on Mumbai Indians Dataset.
 
 Building SVM Classifier from scratch using TensorFlow on Randomly created Multi-Class Classifcation Dataset.
 
-## k-Nearest Neighbours (KNN)
+## K-Nearest Neighbours (KNN)
 
 Implementation of k-Nearest Neighbours Algorithm on Iris Flower Dataset.

@@ -1,5 +1,5 @@
 """
-Implementation of k-Nearest Neighbours Algorithm
+Implementation of K-Nearest Neighbours Algorithm
 """
 import numpy as np
 import matplotlib.pyplot as plt
