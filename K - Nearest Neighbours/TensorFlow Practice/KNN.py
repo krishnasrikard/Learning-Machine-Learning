@@ -92,14 +92,15 @@ class KNN():
 		
 	def Predict_NearestNeighbours(self,Data,Labels,TestSet):
 		# Predict Nearest Neighbours for Testset
-				"""
+		"""
 		Data		: Training Inputs
 		Labels		: Training Outputs/Targets
 		TestSet		: Test Points
 		"""
+		
 		Predictions = []
 		for test in TestSet:
-			Predictions.append(self.Neighbours(Data,Labels,test))
+			Predictions.append(self.NearestNeighbour(Data,Labels,test))
 			
 		return np.array(Predictions)
 		
@@ -109,6 +110,6 @@ Labels = np.array([0,1,1,2])
 Test = np.array([[4,4,4]])
 '''
 knn = KNN(3)
-Y_Pred = knn.Predict_Neighbours(X_train,Y_train,X_val)					# Predictions
+Y_Pred = knn.Predict_NearestNeighbours(X_train,Y_train,X_val)			# Predictions
 Accuracy = accuracy_score(Y_val,Y_Pred)									# Calulating Accuracy
 print (Accuracy)
