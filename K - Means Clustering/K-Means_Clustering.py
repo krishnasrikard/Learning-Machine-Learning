@@ -125,5 +125,6 @@ class KMeans():
 		return Output,Loss
 		
 KMeans = KMeans(6)
-Clustered_Data = KMeans.ClusterData(Data,3)[0]
+Clustered_Data,Loss = KMeans.ClusterData(Data,3)
 KMeans.VisualiseData(Clustered_Data,"Final Output")
+print (Loss)

@@ -16,7 +16,13 @@ Implementation of K-Nearest Neighbours Algorithm on Iris Flower Dataset.
 Implementation of K-Means Clustering.
 
 ## Principal Componenet Analysis
-Learning and Implementing PCA with scikit-learn.
+Learning and Implementing PCA with numpy and scikit-learn.
 
 ## t-SNE Algorithm
 Learning and Implementing t-SNE Algorithm with scikit-learn.
+
+## Gaussian Mixture Model
+Implementing Gaussian Mixture Model using Expectation Maximization Alogorithm.
+
+## Maximum Likelihood Estimation
+Implementing MLE for various Distributions.
