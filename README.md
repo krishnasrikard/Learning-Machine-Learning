@@ -26,3 +26,6 @@ Implementing Gaussian Mixture Model using Expectation Maximization Alogorithm.
 
 ## Maximum Likelihood Estimation
 Implementing MLE for various Distributions.
+
+## Hidden Markov Model
+Implementing Hidden Markov Model to Classifying Audio Files.
