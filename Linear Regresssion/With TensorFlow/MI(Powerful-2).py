@@ -20,7 +20,7 @@ pd.options.display.max_rows = 10
 pd.options.display.float_format = '{:.1f}'.format
 
 
-df = pd.read_csv('MI.csv',sep=',')															#Importing the .csv for data analysis
+df = pd.read_csv('../Dataset/MI.csv',sep=',')															#Importing the .csv for data analysis
 df = df.reindex(np.random.permutation(df.index))											#Shuffle																	
 print (df)
 print ("--------------------------------------------------------------------------")

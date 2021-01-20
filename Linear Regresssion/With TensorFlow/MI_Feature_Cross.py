@@ -20,7 +20,7 @@ pd.options.display.max_rows = 10
 pd.options.display.float_format = '{:.1f}'.format
 
 
-df = pd.read_csv('MI.csv',sep=',')															#Importing the .csv for data analysis
+df = pd.read_csv('../Dataset/MI.csv',sep=',')															#Importing the .csv for data analysis
 df = df.reindex(np.random.permutation(df.index))											#Shuffle																	
 print (df)
 print ("--------------------------------------------------------------------------")
@@ -84,17 +84,6 @@ print (Correlation_Dataframe.corr())
 print ("--------------------------------------------------------------------------")
 
 
-def construct_feature_columns(input_features):
-	"""Construct the TensorFlow Feature Columns.
-
-	Args:
-		input_features: The names of the numerical input features to use.
-	Returns:
-		A set of feature columns
-    """ 
-	return set([tf.feature_column.numeric_column(my_feature) for my_feature in input_features])
-
-
 
 def my_input_fn(features, targets, batch_size = 1, shuffle=True, num_epochs=None):			#Defining a input function
     """Trains a linear regression model of one feature.
@@ -126,8 +115,7 @@ def my_input_fn(features, targets, batch_size = 1, shuffle=True, num_epochs=None
 
 
 
-
-def train_model(learning_rate,steps,batch_size,training_examples,training_targets,validation_examples,validation_targets):
+def train_model(learning_rate,steps,batch_size,feature_columns,training_examples,training_targets,validation_examples,validation_targets):
 	"""Trains a linear regression model of multiple features.
   
 	In addition to training, this function also prints training progress information,
@@ -153,12 +141,13 @@ def train_model(learning_rate,steps,batch_size,training_examples,training_target
 
 	periods = 10
 	steps_per_period = steps / periods
-  
+	
 	# Create a linear regressor object.
-	Current_Optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
-	Current_Optimizer = tf.contrib.estimator.clip_gradients_by_norm(Current_Optimizer, 5.0)
-	Linear_Regressor = tf.estimator.LinearRegressor(feature_columns=construct_feature_columns(training_examples), optimizer=Current_Optimizer)
-  
+# Create a linear regressor object.
+	My_Optimizer = tf.train.FtrlOptimizer(learning_rate=learning_rate)
+	My_Optimizer = tf.contrib.estimator.clip_gradients_by_norm(My_Optimizer, 5.0)
+	Linear_Regressor = tf.estimator.LinearRegressor(feature_columns=feature_columns,optimizer=My_Optimizer)	
+	  
 	# 1. Create input functions.
 	training_input_fn = lambda: my_input_fn(training_examples,training_targets["Total"],batch_size=batch_size)
 	predict_training_input_fn = lambda: my_input_fn(training_examples,training_targets["Total"],num_epochs=1,shuffle=False)
@@ -201,33 +190,50 @@ def train_model(learning_rate,steps,batch_size,training_examples,training_target
 	plt.legend()
 	plt.show()
 
-	return Linear_Regressor       
+	return Linear_Regressor
+	
+
+def get_quantile_based_boundaries(feature_values, num_buckets):
+	boundaries = np.arange(1.0, num_buckets) / num_buckets
+	quantiles = feature_values.quantile(boundaries)
+	return [quantiles[q] for q in quantiles.keys()]
+
+
+def construct_feature_columns(training_examples):
+	"""Construct the TensorFlow Feature Columns.
+	Returns:
+		A set of feature columns
+	""" 
+	Rohit = tf.feature_column.numeric_column("Rohit")
+	Quinton = tf.feature_column.numeric_column("Quinton")
+	Surya = tf.feature_column.numeric_column("Surya")
+##	Ishan = tf.feature_column.numeric_column("Ishan")
+	Pollard = tf.feature_column.numeric_column("Pollard")
+	Hardik = tf.feature_column.numeric_column("Hardik")
+	Krunal = tf.feature_column.numeric_column("Krunal")
+
+	bucketized_Rohit = tf.feature_column.bucketized_column(Rohit, boundaries=get_quantile_based_boundaries(df["Rohit"], 4))
+	bucketized_Quinton = tf.feature_column.bucketized_column(Quinton, boundaries=get_quantile_based_boundaries(df["Quinton"], 4))			# Divide Quinton into 4 buckets.
+	bucketized_Surya = tf.feature_column.bucketized_column(Surya, boundaries=get_quantile_based_boundaries(df["Surya"], 5))					# Divide Surya into 5 buckets.
+##	bucketized_Ishan = tf.feature_column.bucketized_column(Ishan, boundaries=get_quantile_based_boundaries(df["Ishan"], 3))
+	bucketized_Pollard = tf.feature_column.bucketized_column(Pollard, boundaries=get_quantile_based_boundaries(df["Pollard"], 4))
+	bucketized_Krunal = tf.feature_column.bucketized_column(Krunal, boundaries=get_quantile_based_boundaries(df["Krunal"], 3))
+	bucketized_Hardik = tf.feature_column.bucketized_column(Hardik, boundaries=get_quantile_based_boundaries(df["Hardik"], 3))
+	bucketized_Opening = tf.feature_column.crossed_column(set([bucketized_Rohit, bucketized_Quinton]), hash_bucket_size = 1000)
 
 	
-Minimal_Features = ["Surya","Quinton"]
-
-minimal_training_examples = training_examples[Minimal_Features]
-minimal_validation_examples = validation_examples[Minimal_Features]
-
-
-plt.figure(figsize=(8, 5))
-
-ax = plt.subplot(1, 1, 1)
-ax.set_title("Minimal Data")
-
-ax.set_autoscaley_on(False)
-ax.set_ylim([0, 200])
-ax.set_autoscalex_on(False)
-ax.set_xlim([0, 10])
-plt.scatter(training_examples["Quinton"], training_targets["Total"])
+	feature_columns = set([bucketized_Rohit,bucketized_Quinton,bucketized_Surya,bucketized_Pollard,bucketized_Krunal,bucketized_Hardik,bucketized_Opening])
+  
+	return feature_columns
 
 
-Linear_Regressor = train_model(learning_rate=0.03,steps=1000,batch_size=11,training_examples=minimal_training_examples,training_targets=training_targets,validation_examples=minimal_validation_examples,validation_targets=validation_targets)
+
+Linear_Regressor = train_model(learning_rate=1.,steps=1000,batch_size=11,feature_columns=construct_feature_columns(training_examples),training_examples=training_examples,training_targets=training_targets,validation_examples=validation_examples,validation_targets=validation_targets)
 
 
 #Testing the Model
 
-test_data = pd.read_csv('MI_Test.csv',sep=',')											#Test data
+test_data = pd.read_csv('../Dataset/MI_Test.csv',sep=',')											#Test data
 test_data = test_data.reindex(np.random.permutation(test_data.index))
 print (test_data)
 print ("--------------------------------------------------------------------------")

@@ -1,7 +1,6 @@
 """
 The following code utilises TesnsorFlow 1.x
 """
-#Some of the input dataset is now considered a validation set.
 from __future__ import print_function
 
 import math
@@ -21,7 +20,7 @@ pd.options.display.max_rows = 10
 pd.options.display.float_format = '{:.1f}'.format
 
 
-df = pd.read_csv('MI.csv',sep=',')															#Importing the .csv for data analysis
+df = pd.read_csv('../Dataset/MI.csv',sep=',')															#Importing the .csv for data analysis
 df = df.reindex(np.random.permutation(df.index))											#Shuffle																	
 print (df)
 print ("--------------------------------------------------------------------------")
@@ -78,27 +77,22 @@ print (validation_targets.describe())
 print ("--------------------------------------------------------------------------")
 
 
+Correlation_Dataframe = training_examples.copy()
+Correlation_Dataframe["target"] = training_targets["Total"]
 
-plt.figure(figsize=(13, 8))
+print (Correlation_Dataframe.corr())
+print ("--------------------------------------------------------------------------")
 
-ax = plt.subplot(1, 2, 1)
-ax.set_title("Validation Data")
 
-ax.set_autoscaley_on(False)
-ax.set_ylim([100, 150])
-ax.set_autoscalex_on(False)
-ax.set_xlim([0, 50])
-plt.scatter(validation_examples["Krunal"],validation_examples["Hardik"],cmap="RdYlGn",c=validation_targets["Total"] / validation_targets["Total"].max())
+def construct_feature_columns(input_features):
+	"""Construct the TensorFlow Feature Columns.
 
-ax = plt.subplot(1,2,2)
-ax.set_title("Training Data")
-
-ax.set_autoscaley_on(False)
-ax.set_ylim([100, 150])
-ax.set_autoscalex_on(False)
-ax.set_xlim([0, 50])
-plt.scatter(training_examples["Krunal"],training_examples["Hardik"],cmap="coolwarm",c=training_targets["Total"] / training_targets["Total"].max())
-plt.show()
+	Args:
+		input_features: The names of the numerical input features to use.
+	Returns:
+		A set of feature columns
+    """ 
+	return set([tf.feature_column.numeric_column(my_feature) for my_feature in input_features])
 
 
 
@@ -131,15 +125,6 @@ def my_input_fn(features, targets, batch_size = 1, shuffle=True, num_epochs=None
     return features, labels
 
 
-def construct_feature_columns(input_features):
-	"""Construct the TensorFlow Feature Columns.
-
-	Args:
-		input_features: The names of the numerical input features to use.
-	Returns:
-		A set of feature columns
-    """ 
-	return set([tf.feature_column.numeric_column(my_feature) for my_feature in input_features])
 
 
 def train_model(learning_rate,steps,batch_size,training_examples,training_targets,validation_examples,validation_targets):
@@ -218,11 +203,31 @@ def train_model(learning_rate,steps,batch_size,training_examples,training_target
 
 	return Linear_Regressor       
 
+	
+Minimal_Features = ["Surya","Quinton"]
 
-Linear_Regressor = train_model(learning_rate=0.05,steps=100,batch_size=11,training_examples=training_examples,training_targets=training_targets,validation_examples=validation_examples,validation_targets=validation_targets)
-print ("--------------------------------------------------------------------------")
+minimal_training_examples = training_examples[Minimal_Features]
+minimal_validation_examples = validation_examples[Minimal_Features]
 
-test_data = pd.read_csv('MI_Test.csv',sep=',')											#Test data
+
+plt.figure(figsize=(8, 5))
+
+ax = plt.subplot(1, 1, 1)
+ax.set_title("Minimal Data")
+
+ax.set_autoscaley_on(False)
+ax.set_ylim([0, 200])
+ax.set_autoscalex_on(False)
+ax.set_xlim([0, 10])
+plt.scatter(training_examples["Quinton"], training_targets["Total"])
+
+
+Linear_Regressor = train_model(learning_rate=0.03,steps=1000,batch_size=11,training_examples=minimal_training_examples,training_targets=training_targets,validation_examples=minimal_validation_examples,validation_targets=validation_targets)
+
+
+#Testing the Model
+
+test_data = pd.read_csv('../Dataset/MI_Test.csv',sep=',')											#Test data
 test_data = test_data.reindex(np.random.permutation(test_data.index))
 print (test_data)
 print ("--------------------------------------------------------------------------")
