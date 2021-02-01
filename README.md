@@ -32,3 +32,6 @@ Implementing Hidden Markov Model to Classifying Audio Files.
 
 ## Decision Trees
 Learning, Training and Understanding Decision Trees for Classification and Regression.
+
+## Random Forests
+Learning, Training and Understanding Random Forests for Classification and Regression.
