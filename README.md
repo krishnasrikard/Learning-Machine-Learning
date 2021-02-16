@@ -38,3 +38,6 @@ Understanding and Learning Ensemble Techniques.
 
 ## Random Forests
 Learning, Training and Understanding Random Forests for Classification and Regression.
+
+## Boosting
+Understanding Boosting Algorithms.
