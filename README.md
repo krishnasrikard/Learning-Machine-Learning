@@ -1,4 +1,4 @@
-# Machine-Learning
+# Learning-Machine-Learning
 
 ## Linear Regression
 Task of Linear Regression on Mumbai Indians Dataset.
